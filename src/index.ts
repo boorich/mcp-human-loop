@@ -53,7 +53,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   switch (request.params.name) {
     case "evaluate_need_for_human": {
       const taskDescription = String(request.params.arguments?.taskDescription);
-      const modelCapabilities = request.params.arguments?.modelCapabilities || [];
+      const modelCapabilities = Array.isArray(request.params.arguments?.modelCapabilities) ? request.params.arguments.modelCapabilities : [];
 
       const evaluation = await humanLoop.processRequest({
         taskDescription,
