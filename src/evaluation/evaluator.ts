@@ -1,8 +1,7 @@
-import { Message } from "@modelcontextprotocol/sdk/types.js";
 import { EvaluationContext, EvaluationResult } from "./types.js";
 
 export class LLMEvaluator {
-  private createEvaluationPrompt(context: EvaluationContext): Message[] {
+  private createEvaluationPrompt(context: EvaluationContext) {
     return [
       {
         role: "system",
@@ -32,8 +31,6 @@ export class LLMEvaluator {
   }
 
   private parseEvaluationResponse(response: string): EvaluationResult {
-    // The LLM's response should be structured to be easily parsed
-    // This is a simplified implementation
     const needsHuman = response.toLowerCase().includes("need human") ||
                       response.toLowerCase().includes("human required");
 
@@ -57,14 +54,8 @@ export class LLMEvaluator {
   }
 
   async evaluate(context: EvaluationContext): Promise<EvaluationResult> {
-    // This would typically send the evaluation prompt to the LLM
-    // and receive its response
     const evaluationPrompt = this.createEvaluationPrompt(context);
-    
-    // For now, we'll simulate the LLM response
-    // In reality, this would come from the actual LLM
     const mockLLMResponse = "Need human review for this task due to potential risks...";
-    
     return this.parseEvaluationResponse(mockLLMResponse);
   }
 }

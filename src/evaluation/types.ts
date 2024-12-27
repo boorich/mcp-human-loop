@@ -1,5 +1,3 @@
-import { Message } from "@modelcontextprotocol/sdk/types.js";
-
 export interface EvaluationResult {
   needsHuman: boolean;
   reason?: string;
@@ -11,7 +9,13 @@ export interface EvaluationResult {
 }
 
 export interface EvaluationContext {
-  messages: Message[];
+  messages: Array<{
+    role: string;
+    content: {
+      type: string;
+      text: string;
+    };
+  }>;
   taskDescription: string;
   modelCapabilities?: string[];
 }

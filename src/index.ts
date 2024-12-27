@@ -23,7 +23,6 @@ const server = new Server(
   }
 );
 
-// List available tools
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
@@ -37,9 +36,10 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               type: "string",
               description: "Description of the task to be evaluated"
             },
-            context: {
-              type: "object",
-              description: "Additional context for evaluation"
+            modelCapabilities: {
+              type: "array",
+              items: { type: "string" },
+              description: "List of model capabilities"
             }
           },
           required: ["taskDescription"]
@@ -49,17 +49,16 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
   };
 });
 
-// Handle tool calls
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   switch (request.params.name) {
     case "evaluate_need_for_human": {
       const taskDescription = String(request.params.arguments?.taskDescription);
-      const context = request.params.arguments?.context || {};
+      const modelCapabilities = request.params.arguments?.modelCapabilities || [];
 
       const evaluation = await humanLoop.processRequest({
         taskDescription,
-        messages: [], // This would be populated with relevant conversation context
-        modelCapabilities: context.modelCapabilities
+        messages: [],
+        modelCapabilities
       });
 
       return {
@@ -75,7 +74,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   }
 });
 
-// List available prompts
 server.setRequestHandler(ListPromptsRequestSchema, async () => {
   return {
     prompts: [
@@ -87,7 +85,6 @@ server.setRequestHandler(ListPromptsRequestSchema, async () => {
   };
 });
 
-// Handle prompt requests
 server.setRequestHandler(GetPromptRequestSchema, async (request) => {
   if (request.params.name !== "evaluate_task") {
     throw new Error("Unknown prompt");
@@ -113,7 +110,6 @@ server.setRequestHandler(GetPromptRequestSchema, async (request) => {
   };
 });
 
-// Start the server
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
