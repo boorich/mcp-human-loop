@@ -7,12 +7,16 @@ export class LLMEvaluator {
         role: "system",
         content: {
           type: "text",
-          text: `You are a self-evaluating AI system. You need to determine if the current task requires human intervention.
+          text: `You are a self-evaluating AI system. You need to determine if the task requires human intervention.
                 Consider:
                 1. Task complexity and your capabilities
                 2. Risk and consequences of actions
                 3. Need for human emotional intelligence
                 4. Required permissions or authorizations
+                
+                Provide:
+                - Confident statements you can make
+                - Specific questions requiring human input
                 
                 Be conservative - if in doubt, recommend human involvement.`
         }
@@ -30,32 +34,38 @@ export class LLMEvaluator {
     ];
   }
 
-  private parseEvaluationResponse(response: string): EvaluationResult {
-    const needsHuman = response.toLowerCase().includes("need human") ||
-                      response.toLowerCase().includes("human required");
+  private parseEvaluationResponse(response: any): EvaluationResult {
+    // Mock response structure - in production this would parse LLM output
+    const mockResponse = {
+      confidentStatements: [
+        "Quantum entanglement involves quantum particles maintaining correlations across distances",
+        "The brain primarily uses classical electrochemical processes for neural signaling",
+        "There is currently no empirical evidence directly linking quantum entanglement to consciousness"
+      ],
+      humanQuestions: [
+        "What are your thoughts on Penrose-Hameroff's microtubule theory of quantum consciousness?",
+        "Should we explore potential quantum effects in specific neural processes like neurotransmitter release?",
+        "What level of scientific evidence would you consider sufficient to establish a quantum-consciousness link?"
+      ]
+    };
 
     return {
-      needsHuman,
-      confidence: needsHuman ? 0.8 : 0.9,
-      reason: response,
-      suggestedAction: needsHuman ? {
-        type: this.determineActionType(response),
-        description: response
-      } : undefined
+      needsHuman: mockResponse.humanQuestions.length > 0,
+      confidence: 0.8,
+      reason: "Task requires human expertise for certain aspects",
+      suggestedAction: {
+        type: 'input',
+        description: "Human expertise needed for theoretical quantum-consciousness connections"
+      },
+      confidentStatements: mockResponse.confidentStatements,
+      humanQuestions: mockResponse.humanQuestions
     };
-  }
-
-  private determineActionType(response: string): 'review' | 'input' | 'approval' | 'emotional_support' {
-    const r = response.toLowerCase();
-    if (r.includes("emotion") || r.includes("support")) return 'emotional_support';
-    if (r.includes("approve") || r.includes("authorize")) return 'approval';
-    if (r.includes("input") || r.includes("provide")) return 'input';
-    return 'review';
   }
 
   async evaluate(context: EvaluationContext): Promise<EvaluationResult> {
     const evaluationPrompt = this.createEvaluationPrompt(context);
-    const mockLLMResponse = "Need human review for this task due to potential risks...";
+    // Mock LLM call - in production this would call actual LLM
+    const mockLLMResponse = {};
     return this.parseEvaluationResponse(mockLLMResponse);
   }
 }

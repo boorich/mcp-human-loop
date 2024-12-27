@@ -18,7 +18,9 @@ export class HumanLoopController {
           status: 'human_required',
           reason: evaluation.reason,
           action: evaluation.suggestedAction,
-          confidence: evaluation.confidence
+          confidence: evaluation.confidence,
+          confidentStatements: evaluation.confidentStatements,
+          humanQuestions: evaluation.humanQuestions
         };
       }
 

@@ -6,6 +6,8 @@ export interface EvaluationResult {
     type: 'review' | 'input' | 'approval' | 'emotional_support';
     description: string;
   };
+  confidentStatements?: string[];
+  humanQuestions?: string[];
 }
 
 export interface EvaluationContext {
